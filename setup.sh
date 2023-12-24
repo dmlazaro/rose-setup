@@ -17,8 +17,10 @@ ask() {
 			default=
 		fi
 
+		echo ""
 		echo -n "[?] $1 [$prompt] "
 		read -r reply </dev/tty
+		echo ""
 
 		if [ -z "$reply" ]; then
 			reply=$default
@@ -84,7 +86,7 @@ fi
 if ! [ -x "$(command -v brew)" ]; then
 	message "Installing Homebrew..."
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-	eval $(/opt/homebrew/bin/brew shellenv) 
+	eval $(/opt/homebrew/bin/brew shellenv)
 	message_success "Homebrew successfully installed."
 else
 	message_nochange "Homebrew is already installed."
@@ -103,9 +105,9 @@ message "Installing Oh My Zsh..."
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 message_success "Oh My Zsh successfully installed. You will be prompted later to change your default shell."
 
-message "Add customizations to .zshrc"
+message "Adding customizations to .zshrc..."
 
-cat << END >> ~/.zshrc
+cat <<END >>~/.zshrc
 # Load zsh prompt
 export TYPEWRITTEN_SYMBOL="●"
 autoload -U promptinit; promptinit
@@ -119,7 +121,7 @@ alias szsh="source ~/.zshrc"
 alias aloe="s daniel@aloe"
 END
 
-echo 'eval $(/opt/homebrew/bin/brew shellenv)' >> ~/.zshrc
+echo 'eval $(/opt/homebrew/bin/brew shellenv)' >>~/.zshrc
 
 if ask "Would you like to change your login shell to zsh?" Y; then
 	chsh -s $(which zsh)
