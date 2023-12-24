@@ -1,4 +1,3 @@
-
 # gui (from App Store)
 brew "mas"
 mas "Dropover", id: 1355679052

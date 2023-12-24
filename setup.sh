@@ -83,15 +83,16 @@ fi
 
 if ! [ -x "$(command -v brew)" ]; then
 	message "Installing Homebrew..."
-	NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	eval $(/opt/homebrew/bin/brew shellenv) 
 	message_success "Homebrew successfully installed."
 else
 	message_nochange "Homebrew is already installed."
 fi
 
-if [ -f "$BREWFILE" ] && . "$BREWFILE"; then
+if [ -f "$BREWFILE" ]; then
 	message "Installing packages from Brewfile..."
-	brew bundle --no-lock
+	brew bundle --no-lock --file=$BREWFILE
 	brew cleanup 2>/dev/null
 	message_success "Homebrew packages successfully installed."
 else
@@ -102,13 +103,9 @@ message "Installing Oh My Zsh..."
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 message_success "Oh My Zsh successfully installed. You will be prompted later to change your default shell."
 
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-message_success "Oh My Zsh successfully installed. You will be prompted to change your default shell."
-
 message "Add customizations to .zshrc"
 
-cat <<END
-
+cat << END >> ~/.zshrc
 # Load zsh prompt
 export TYPEWRITTEN_SYMBOL="●"
 autoload -U promptinit; promptinit
@@ -120,7 +117,9 @@ alias wolf="s lazarod1@teach.cs.toronto.edu"
 alias ezsh="hx ~/.zshrc && source ~/.zshrc"
 alias szsh="source ~/.zshrc"
 alias aloe="s daniel@aloe"
-END >> ~/.zshrc
+END
+
+echo 'eval $(/opt/homebrew/bin/brew shellenv)' >> ~/.zshrc
 
 if ask "Would you like to change your login shell to zsh?" Y; then
 	chsh -s $(which zsh)
